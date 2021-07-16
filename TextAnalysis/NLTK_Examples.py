@@ -48,7 +48,6 @@ print(lineOne)
 tokenized_data = word_tokenize(lineOne)
 print(tokenized_data)
 
-#####################################################################
 # Filter Stop Words
 ## Removes punctuation and common words that do not add meaning
 ## to the phrase as a whole
@@ -258,7 +257,6 @@ with open('BK.txt') as f:
 
 quotes_tokens = nltk.word_tokenize(quotes)
 quotesCorpus = nltk.Text(quotes_tokens)
-
 #####################################################################
 # Concordance
 #
@@ -333,4 +331,3 @@ lemQuotesCorpus = nltk.Text(lem_words)
 
 print("\n")
 lemQuotesCorpus.collocations()
-
