@@ -1,9 +1,8 @@
 #####################################################################
 # To use this Dockerfile and see our results.
-# In the example file you want to run, replace every plt.show()
-# with plt.savefig('<desired filename>.png')
-# 
-# If you do not do this you will not see any graphed results!
+#
+# You must pass "-s" or "--save" at runtime to save our graphs
+# This can be done if running our examples outside of Docker as well
 
 #####################################################################
 # Ubuntu users:
