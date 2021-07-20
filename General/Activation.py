@@ -76,8 +76,17 @@
 
 #####################################################################
 # Examples
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-s",
+                    "--save",
+                    help="Save graphs instead of showing them",
+                    action="store_true")
+
+args = parser.parse_args()
 
 def sigmoid(x):
 
@@ -105,6 +114,23 @@ def softmax(x):
 
 #####################################################################
 
+plt.style.use('dark_background')
+
+colors = [
+    '#F7B538', # Yellow / Red
+    '#DB7C26', # Light Orange
+    '#D8572A', # Orange
+    '#C32F27', # Red
+    '#780116', # Maroon
+]
+
+for param in ['text.color',
+              'axes.labelcolor',
+              'xtick.color',
+              'ytick.color',]:
+    plt.rcParams[param] = '0.9'
+
+plt.rcParams['axes.facecolor'] = "#2A3459"
 
 x = np.arange(-6, 6, 0.01)
 z = np.arange(-4, 4, 0.01)
@@ -119,10 +145,14 @@ ax.spines['top'].set_color('none')
 ax.xaxis.set_ticks_position('bottom')
 ax.yaxis.set_ticks_position('left')
 
-ax.plot (x, sigmoid(x)[0], color='red', linewidth=2, label="sigmoid")
-ax.plot (x, sigmoid(x)[1], color='blue', linewidth=2, label='dX')
-ax.legend(loc='upper left', frameon=False)
-plt.show()
+ax.plot (x, sigmoid(x)[0], color=colors[0], linewidth=4, label="sigmoid")
+ax.plot (x, sigmoid(x)[1], color=colors[1], linewidth=4, label='dX')
+ax.legend(loc='upper left', frameon=False,)
+
+if args.save:
+    plt.savefig("Sigmoid.png")
+else:
+    plt.show()
 
 # Tanh
 fig, ax = plt.subplots(figsize=(16, 9))
@@ -135,10 +165,14 @@ ax.spines['top'].set_color('none')
 ax.xaxis.set_ticks_position('bottom')
 ax.yaxis.set_ticks_position('left')
 
-ax.plot (z, tanh(z)[0], color='red', linewidth=2, label="tanh")
-ax.plot (z, tanh(z)[1], color='blue', linewidth=2, label='dZ')
+ax.plot (z, tanh(z)[0], color=colors[2], linewidth=4, label="tanh")
+ax.plot (z, tanh(z)[1], color=colors[3], linewidth=4, label='dZ')
 ax.legend(loc='upper left', frameon=False)
-plt.show()
+
+if args.save:
+    plt.savefig("Tanh.png")
+else:
+    plt.show()
 
 # ReLU
 fig, ax = plt.subplots(figsize=(16, 9))
@@ -151,8 +185,11 @@ ax.spines['top'].set_color('none')
 ax.xaxis.set_ticks_position('bottom')
 ax.yaxis.set_ticks_position('left')
 
-ax.plot (x, color='red', linewidth=2, label="ReLU")
-ax.plot (ReLU(x), color='blue', linewidth=2, label='dZ')
+ax.plot (x, color=colors[4], linewidth=4, label="ReLU")
+ax.plot (ReLU(x), color=colors[0], linewidth=4, label='dZ')
 ax.legend(loc='upper left', frameon=False)
-plt.show()
 
+if args.save:
+    plt.savefig("ReLU.png")
+else:
+    plt.show()
