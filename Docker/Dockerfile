@@ -59,10 +59,10 @@ RUN pip3 install -r requirements.txt
 # (git checkout Linear)
 #
 # Linux:
-# sudo docker run --rm -v $PWD/Linear:/home nirvash/mumbo python3 /home/LineReg.py
+# sudo docker run --rm -v $PWD/Linear:/home nirvash/mumbo python3 /home/LineReg.py --save
 #
 # Windows:
-# sudo docker run --rm -v %cd%/Linear:/home nirvash/mumbo python3 /home/LineReg.py
+# docker run --rm -v %cd%/Linear:/home nirvash/mumbo python3 /home/LineReg.py --save
 #
 # Explanation:
 # --rm: will remove the container once it stops
