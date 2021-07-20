@@ -6,20 +6,43 @@ from sklearn import metrics
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split, cross_val_score
 
-######################################################################
-# Set graph styling
-sns.set(style='whitegrid', palette='muted', font_scale=1.5)
+#####################################################################
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-s",
+                    "--save",
+                    help="Save graphs instead of showing them",
+                    action="store_true")
+
+args = parser.parse_args()
+
 plt.style.use('dark_background')
 
+for param in ['text.color',
+              'axes.labelcolor',
+              'xtick.color',
+              'ytick.color',]:
+    plt.rcParams[param] = '0.9'
+
+plt.rcParams['axes.facecolor'] = "#2A3459"
+#####################################################################
+
+######################################################################
 # Read training data
-training_data = pd.read_csv('train_assignment.csv')
+training_data = pd.read_csv('./Data/train_assignment.csv')
 
 # Display statistics for SalePrice
 print(training_data['SalePrice'].describe())
 
 # Plot of SalePrice
 sns.displot(training_data['SalePrice'])
-plt.show()
+
+if args.save:
+    plt.savefig("DistPlot.png")
+    plt.close()
+else:
+    plt.show()
 
 # Feature Heatmap of SalePrice correlation
 corrmat = training_data.corr()
@@ -27,7 +50,12 @@ k = 9
 cols = corrmat.nlargest(k, 'SalePrice')['SalePrice'].index
 f, ax = plt.subplots(figsize=(14, 10))
 sns.heatmap(training_data[cols].corr(), vmax=0.8, square=True, annot=True)
-plt.show()
+
+if args.save:
+    plt.savefig("Heatmap.png")
+    plt.close()
+else:
+    plt.show()
 
 ######################################################################
 # Linear Regression
@@ -53,12 +81,18 @@ plt.plot(x_test, y_pred, color='blue')
 plt.title("Living Area vs Price with prediction")
 plt.xlabel("Sq Ft")
 plt.ylabel("Price")
-plt.show()
+
+if args.save:
+    plt.savefig("Training_Data_Regression.png")
+    plt.close()
+else:
+    plt.show()
+
 
 #####################################################################
 # Working with Test data
 
-test_data = pd.read_csv('test_assignment.csv')
+test_data = pd.read_csv('./Data/test_assignment.csv')
 
 a = test_data['GrLivArea'].values[:, np.newaxis]
 b = test_data['LotArea'].values[:, np.newaxis]
@@ -74,7 +108,13 @@ plt.plot(a, test_pred, color='green')
 plt.title("Test Data Prediction")
 plt.xlabel("Sq Ft")
 plt.ylabel("Price")
-plt.show()
+
+if args.save:
+    plt.savefig("Test_Data_Regression.png")
+    plt.close()
+else:
+    plt.show()
+
 
 #####################################################################
 # Manual Linear Regression
@@ -200,43 +240,63 @@ plt.title("Cost Function")
 plt.xlabel("Num Iterations")
 plt.ylabel("Cost")
 plt.plot(manual._cost_history)
-plt.show()
+
+if args.save:
+    plt.savefig("Manual_Regression.png")
+    plt.close()
+else:
+    plt.show()
+
 
 #####################################################################
 # Line Fitting, Optimization, and Animation
 # Plotting
-from matplotlib import rc
-from matplotlib.animation import FuncAnimation
 
-fig = plt.figure()
-ax = plt.axes()
-plt.title("Sale Price vs Living Area")
-plt.xlabel("Living Area SqFt")
-plt.ylabel("Sale Price")
-plt.scatter(x[:, 1], y)
-line, = ax.plot([], [], lw=2, color='pink')
-annotation = ax.text(-1, 70000, '')
-annotation.set_animated(True)
+# If we are not trying to save graphs we will produce the animation
+if not args.save:
+    from matplotlib import rc
+    from matplotlib.animation import FuncAnimation
+
+    fig = plt.figure()
+    ax = plt.axes()
+    plt.title("Sale Price vs Living Area")
+    plt.xlabel("Living Area SqFt")
+    plt.ylabel("Sale Price")
+    plt.scatter(x[:, 1], y)
+    line, = ax.plot([], [], lw=2, color='pink')
+    annotation = ax.text(-1, 70000, '')
+    annotation.set_animated(True)
 
 # Generate Animation
-def init():
-    line.set_data([], [])
-    annotation.set_text('')
-    return line, annotation
+    def init():
+        line.set_data([], [])
+        annotation.set_text('')
+        return line, annotation
 
 # Animation
-def animate(i):
-    x = np.linspace(-5, 20, 1000)
-    y = manual._w_history[i][1]*x + manual._w_history[i][0]
-    line.set_data(x, y)
-    annotation.set_text("Cost = %.2f e10" % (manual._cost_history[i] / 10000000000))
-    return line, annotation
+    def animate(i):
+        x = np.linspace(-5, 20, 1000)
+        y = manual._w_history[i][1]*x + manual._w_history[i][0]
+        line.set_data(x, y)
+        annotation.set_text("Cost = %.2f e10" %
+                            (manual._cost_history[i] / 10000000000))
 
-anime = animation.FuncAnimation(fig, animate, init_func=init, frames=300, interval=10, blit=True)
+        return line, annotation
 
-rc('animation', html='jshtml')
-plt.draw()
-plt.show()
+    anime = animation.FuncAnimation(fig,
+                                    animate,
+                                    init_func=init,
+                                    frames=300,
+                                    interval=10,
+                                    blit=True)
+
+    rc('animation', html='jshtml')
+    plt.draw()
+    plt.show()
+
+else:
+    # Currently not sure how to save animation
+    print("Saving animation not yet available...")
 
 #####################################################################
 # Multivariable Regression
@@ -260,21 +320,37 @@ plt.title("Cost Function")
 plt.xlabel("Num Iterations")
 plt.ylabel("Cost")
 plt.plot(manual._cost_history)
-plt.show()
 
-fig = plt.figure()
-ax = plt.axes()
-plt.title("Living Area, Quality, Fireplaces")
-plt.xlabel("Living Area SqFt")
-plt.ylabel("Sale Price")
-plt.scatter(x[:, 1], y)
-line, = ax.plot([], [], lw=2, color='orange')
-annotation = ax.text(-1, 70000, '')
-annotation.set_animated(True)
+if args.save:
+    plt.savefig("Multivariable_Regression.png")
+    plt.close()
+else:
+    plt.show()
 
-anime = animation.FuncAnimation(fig, animate, init_func=init, frames=300, interval=10, blit=True)
+# If we are not trying to save graphs we will produce the animation
+if not args.save:
 
-rc('animation', html='jshtml')
-plt.draw()
-plt.show()
+    fig = plt.figure()
+    ax = plt.axes()
+    plt.title("Living Area, Quality, Fireplaces")
+    plt.xlabel("Living Area SqFt")
+    plt.ylabel("Sale Price")
+    plt.scatter(x[:, 1], y)
+    line, = ax.plot([], [], lw=2, color='orange')
+    annotation = ax.text(-1, 70000, '')
+    annotation.set_animated(True)
 
+    anime = animation.FuncAnimation(fig,
+                                    animate,
+                                    init_func=init,
+                                    frames=300,
+                                    interval=10,
+                                    blit=True)
+
+    rc('animation', html='jshtml')
+    plt.draw()
+    plt.show()
+
+else:
+    # Currently not sure how to save animation within Docker
+    print("Saving animation not yet available...")
