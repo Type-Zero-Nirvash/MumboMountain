@@ -7,9 +7,12 @@ to find training data for our projects.
 
 [Dataset](https://www.kaggle.com/puneet6060/intel-image-classification)
 
-You will want to download this dataset and place the folders:
-**seq_test** and **seq_train** inside of the empty 'Class_Data'
-directory.
+Create a directory named 'Class_Data', within the directory that holds
+Transfer.py
+
+Then you will need to download this dataset and place the folders:
+**seq_test** and **seq_train** 
+inside of the empty 'Class_Data' directory.
 
 ## Setting up your Environment
 
